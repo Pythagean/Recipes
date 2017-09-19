@@ -9,7 +9,7 @@ function getRecipesFolder() {
   }
 };
 
-function getAllRecipes(){
+function importIntoAllRecipes(){
   var recipes_folder = getRecipesFolder(),
       course_folders = recipes_folder.getFolders(),
       all_recipes = [];
@@ -83,22 +83,36 @@ function getAllRecipes(){
               ingredients: ingredients_array});
           }
         }
-
       }
-
     }
-
   }
-  insertRecipesIntoShet(all_recipes);
+  insertRecipesIntoSheet(all_recipes);
   return all_recipes;
 };
 
-function getRecipesFromSheet(){
-
+// Retrieves data from AllRecipes
+function getAllRecipes(){
+  SpreadsheetApp.setActiveSpreadsheet(SpreadsheetApp.openById('1-e3LVnZ9C6giP27ztvHifnLuBGQktjxyRC_qOXCVDJg'));
+  var active_spreadsheet = SpreadsheetApp.getActiveSpreadsheet(),
+      last_row = active_spreadsheet.getLastRow();
+  active_spreadsheet.setActiveSheet(active_spreadsheet.getSheetByName('AllRecipes'));
+  var all_recipes_sheet = SpreadsheetApp.getActiveSheet(),
+      existing_recipes = last_row == 1 ? [] : all_recipes_sheet.getRange(2, 1, last_row - 1, 5).getValues(),
+      all_recipes = [];
+  existing_recipes.forEach(function(recipe){
+    var recipe_obj = {};
+    recipe_obj.name = recipe[0];
+    recipe_obj.course = recipe[1];
+    recipe_obj.category = recipe[2];
+    recipe_obj.subcategory = recipe[3];
+    recipe_obj.ingredients = BarDelimitedToArray(recipe[4]);
+    all_recipes.push(recipe_obj);
+  });
+  return all_recipes;
 };
 
 
-function insertRecipesIntoShet(recipes_array){
+function insertRecipesIntoSheet(recipes_array){
   var active_spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   active_spreadsheet.setActiveSheet(active_spreadsheet.getSheetByName('AllRecipes'));
   var all_recipes_sheet = SpreadsheetApp.getActiveSheet(),
