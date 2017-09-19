@@ -11,9 +11,9 @@ function doGet(e) {
     matching_recipes.forEach(function(recipe){
       var existing_course_idx = hashArrayContainsValue('name', recipe.course, courses, 'idx');
       if (existing_course_idx < 0){
-        courses.push({name: recipe.course, recipes: [recipe.name + ' (' + recipe.category + ')']});
+        courses.push({name: recipe.course, recipes: ['<a href="' + recipe.web_url + '">' + recipe.name + '</a> (' + recipe.category + ')']});
       } else {
-        courses[existing_course_idx].recipes.push(recipe.name + ' (' + recipe.category + ')');
+        courses[existing_course_idx].recipes.push('<a href="' + recipe.web_url + '">' + recipe.name + '</a> (' + recipe.category + ')');
       }
 
     });
@@ -22,6 +22,7 @@ function doGet(e) {
       output.append('<p>' + course.name + ' </p>');
       output.append('<ul>');
       course.recipes.forEach(function(recipe){
+        //<a href="https://www.w3schools.com">Visit W3Schools.com!</a>
         output.append('<li>'+recipe+'</li>');
       });
       output.append('</ul>');
