@@ -7,7 +7,7 @@ function onOpen() {
 
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('Scripts')
-    .addItem('Import Recipes', 'importRecipes')
+    .addItem('Import Recipes', 'importIntoAllRecipes')
     .addToUi();
 
 };

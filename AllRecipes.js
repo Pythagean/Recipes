@@ -34,7 +34,9 @@ function importIntoAllRecipes(){
           category: '',
           subcategory: '',
           name: course_root_file.getName(),
-          ingredients: ingredients_array});
+          ingredients: ingredients_array,
+          id: course_root_file.getId(),
+          web_url: course_root_file.getUrl()});
       }
 
       while (category_folders.hasNext()) {
@@ -59,7 +61,9 @@ function importIntoAllRecipes(){
             category: category_folder_name,
             subcategory: '',
             name: category_file.getName(),
-            ingredients: ingredients_array});
+            ingredients: ingredients_array,
+            id: category_file.getId(),
+            web_url: category_file.getUrl()});
         }
 
         while (subcategory_folders.hasNext()) {
@@ -80,7 +84,9 @@ function importIntoAllRecipes(){
               category: category_folder_name,
               subcategory: subcategory_folder_name,
               name: subcategory_file.getName(),
-              ingredients: ingredients_array});
+              ingredients: ingredients_array,
+              id: subcategory_file.getId(),
+              web_url: subcategory_file.getUrl()});
           }
         }
       }
@@ -97,7 +103,7 @@ function getAllRecipes(){
       last_row = active_spreadsheet.getLastRow();
   active_spreadsheet.setActiveSheet(active_spreadsheet.getSheetByName('AllRecipes'));
   var all_recipes_sheet = SpreadsheetApp.getActiveSheet(),
-      existing_recipes = last_row == 1 ? [] : all_recipes_sheet.getRange(2, 1, last_row - 1, 5).getValues(),
+      existing_recipes = last_row == 1 ? [] : all_recipes_sheet.getRange(2, 1, last_row - 1, 7).getValues(),
       all_recipes = [];
   existing_recipes.forEach(function(recipe){
     var recipe_obj = {};
@@ -106,6 +112,8 @@ function getAllRecipes(){
     recipe_obj.category = recipe[2];
     recipe_obj.subcategory = recipe[3];
     recipe_obj.ingredients = BarDelimitedToArray(recipe[4]);
+    recipe_obj.doc_id = BarDelimitedToArray(recipe[5]);
+    recipe_obj.web_url = BarDelimitedToArray(recipe[6]);
     all_recipes.push(recipe_obj);
   });
   return all_recipes;
@@ -116,14 +124,20 @@ function insertRecipesIntoSheet(recipes_array){
   var active_spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   active_spreadsheet.setActiveSheet(active_spreadsheet.getSheetByName('AllRecipes'));
   var all_recipes_sheet = SpreadsheetApp.getActiveSheet(),
-      range = all_recipes_sheet.getRange(2,1,recipes_array.length,5),
+      range = all_recipes_sheet.getRange(2,1,recipes_array.length,7),
       data_to_insert = [];
 
-  var existing_recipes = all_recipes_sheet.getRange(2,1,all_recipes_sheet.getLastRow(),5);
+  var existing_recipes = all_recipes_sheet.getRange(2,1,all_recipes_sheet.getLastRow(),7);
   existing_recipes.clear();
 
   recipes_array.forEach(function(recipe){
-    data_to_insert.push([recipe.name, recipe.course, recipe.category, recipe.subcategory, recipe.ingredients.join('|')]);
+    data_to_insert.push([recipe.name,
+      recipe.course,
+      recipe.category,
+      recipe.subcategory,
+      recipe.ingredients.join('|'),
+      recipe.id,
+      recipe.web_url]);
   });
 
   range.setValues(data_to_insert);

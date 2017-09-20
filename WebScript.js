@@ -2,18 +2,25 @@ function doGet(e) {
   //return HtmlService.createHtmlOutput('<b>Hello, world!</b>')
   var params = JSON.stringify(e),
       parameters = e.parameters;
-  if (parameters.search != null){
-    var output = HtmlService.createHtmlOutput('<b>Searching for "' + parameters.search + '"</b>'),
-        matching_recipes = searchForIngredient(parameters.search.toString()),
+
+  // Ingredients Search
+  if (parameters.ingredient != null){
+    var output = HtmlService.createHtmlOutput('<b>Searching for "' + parameters.ingredient + '"</b>'),
+        matching_recipes = searchForIngredient(parameters.ingredient.toString()),
         courses = [];
+    Logger.log(matching_recipes);
 
     output.append('<p>Found ' + matching_recipes.length + ' Recipes</p>');
     matching_recipes.forEach(function(recipe){
       var existing_course_idx = hashArrayContainsValue('name', recipe.course, courses, 'idx');
       if (existing_course_idx < 0){
-        courses.push({name: recipe.course, recipes: ['<a href="' + recipe.web_url + '">' + recipe.name + '</a> (' + recipe.category + ')']});
+        Logger.log('about to search for ' + recipe.match);
+        courses.push({name: recipe.course, recipes: ['<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
+        recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')']});
       } else {
-        courses[existing_course_idx].recipes.push('<a href="' + recipe.web_url + '">' + recipe.name + '</a> (' + recipe.category + ')');
+        Logger.log('about to search for ' + recipe.match);
+        courses[existing_course_idx].recipes.push('<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
+          recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')');
       }
 
     });
@@ -22,7 +29,7 @@ function doGet(e) {
       output.append('<p>' + course.name + ' </p>');
       output.append('<ul>');
       course.recipes.forEach(function(recipe){
-        //<a href="https://www.w3schools.com">Visit W3Schools.com!</a>
+        //output.append('<img src="'+getImageFromRecipe('18M-SWL9QsysTcZQNi8ltwkuSWgLbgdXy8Rs0Vxywg-Y').getBlob()+'">')
         output.append('<li>'+recipe+'</li>');
       });
       output.append('</ul>');
@@ -32,8 +39,14 @@ function doGet(e) {
 
     return output;
 
-  } else {
-    return HtmlService.createHtmlOutput(parameters.search);
+  }
+
+  // Course Search
+  else if (parameters.course != null){
+
+  }
+  else {
+    return HtmlService.createHtmlOutput(parameters);
   }
   //var matching_recipes = searchForIngredient(params);
   //return HtmlService.createHtmlOutput(parameters.search);
