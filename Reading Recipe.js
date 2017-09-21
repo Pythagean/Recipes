@@ -21,7 +21,11 @@ function searchDocForIngredient(doc_id, ingredient){
   if (search_results == null) {
     search_results = doc_body.findText(ingredient.toLowerCase());
     if (search_results == null) {
-      search_results = doc_body.findText(ingredient[0].toUpperCase()+ingredient.substr(1));
+      search_results = doc_body.findText(ingredient[0].toUpperCase()+ingredient.substr(1)); // Capitalise
+      if (search_results == null && ingredient.split(' ').length > 0) {
+        search_results = doc_body.findText(ingredient.split(' ')[0][0].toUpperCase()+ingredient.split(' ')[0].substr(1) + ' ' +
+          ingredient.split(' ')[1][0].toUpperCase()+ingredient.split(' ')[1].substr(1));
+      };
     };
   };
   if (search_results == null) { return '';}
