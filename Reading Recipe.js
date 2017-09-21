@@ -11,29 +11,34 @@ function getImageFromRecipe(doc_id) {
 
 
 function searchDocForIngredient(doc_id, ingredient){
-  doc_id = doc_id == null ? '16pXPNJ8Z2kRsrUYndHpON9aN-4rhRqjD2g1eTIWcDRc' : doc_id;
-  ingredient = ingredient == null ? 'cream' : ingredient;
+  doc_id = doc_id == null ? '1UXzvGst8GhU5FvbQEFZngIqDBP2qDDDvd45c0tLzZrY' : doc_id;
+  ingredient = ingredient == null ? 'chives' : ingredient;
 
   var doc = DocumentApp.openById(doc_id),
       doc_body = doc.getBody(),
-      search_results = doc_body.findText(ingredient);
+      range_to_search = doc.newRange(),
+      search_results = '';
 
-  if (search_results == null) {
-    search_results = doc_body.findText(ingredient.toLowerCase());
-    if (search_results == null) {
-      search_results = doc_body.findText(ingredient[0].toUpperCase()+ingredient.substr(1)); // Capitalise
-      if (search_results == null && ingredient.split(' ').length > 0) {
-        search_results = doc_body.findText(ingredient.split(' ')[0][0].toUpperCase()+ingredient.split(' ')[0].substr(1) + ' ' +
-          ingredient.split(' ')[1][0].toUpperCase()+ingredient.split(' ')[1].substr(1));
-      };
-    };
-  };
-  if (search_results == null) { return '';}
-  var text = search_results.getElement().getText();
+  range_to_search.addElementsBetween(doc_body.findText('Ingredients').getElement(),doc_body.findText('Instructions').getElement());
+
+  var elements = range_to_search.getRangeElements();
+  elements.forEach(function(element){
+    if (element.getElement().getType() == DocumentApp.ElementType.LIST_ITEM){
+      var element_to_search = element.getElement().asListItem().getText();
+      //Logger.log('Searching for "' + ingredient + '" in "' + element_to_search + '"');
+      if (ingredient == element_to_search || ingredient == element_to_search.toLowerCase() || element_to_search.match(ingredient)!= null){
+        search_results = element_to_search;
+        return;
+      }
+
+    }
+  });
+
+  if (search_results == '') { return '';}
+  var text = search_results;
   text = text.split('(')[0];
   text = text.split(',')[0];
   text = text.split('-')[0];
 
   return text;
-  //Logger.log(search_results.getElement().getText());
 }

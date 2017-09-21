@@ -14,11 +14,11 @@ function doGet(e) {
     matching_recipes.forEach(function(recipe){
       var existing_course_idx = hashArrayContainsValue('name', recipe.course, courses, 'idx');
       if (existing_course_idx < 0){
-        Logger.log('about to search for ' + recipe.match);
+        Logger.log('about to search for ' + recipe.match + ' in ' + recipe.web_url);
         courses.push({name: recipe.course, recipes: ['<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
         recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')']});
       } else {
-        Logger.log('about to search for ' + recipe.match);
+        Logger.log('about to search for ' + recipe.match + ' in ' + recipe.web_url);
         courses[existing_course_idx].recipes.push('<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
           recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')');
       }
@@ -81,7 +81,8 @@ function handleFormSubmit(a){
 };
 
 function processForm(formObject) {
-  var matching_recipes = searchForIngredient(formObject.search_field.toString()),
+  var exact_match = formObject.exact_match.toString() == 'on' ? true : false,
+      matching_recipes = searchForIngredient(formObject.search_field.toString(), exact_match),
       output = '<h2>Search Results</h2>',
       courses = [];
 
@@ -91,11 +92,11 @@ function processForm(formObject) {
   matching_recipes.forEach(function(recipe){
     var existing_course_idx = hashArrayContainsValue('name', recipe.course, courses, 'idx');
     if (existing_course_idx < 0){
-      Logger.log('about to search for ' + recipe.match);
+      Logger.log('about to search for ' + recipe.match + ' in ' + recipe.web_url);
       courses.push({name: recipe.course, recipes: ['<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
       recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')']});
     } else {
-      Logger.log('about to search for ' + recipe.match);
+      Logger.log('about to search for ' + recipe.match + ' in ' + recipe.web_url);
       courses[existing_course_idx].recipes.push('<a href="' + recipe.web_url + '">' + recipe.name + '</a> | ' +
         recipe.category + ' (' + searchDocForIngredient(recipe.doc_id, recipe.match) + ')');
     }

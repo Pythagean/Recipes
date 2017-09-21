@@ -17,14 +17,14 @@ function searchForIngredient(search_ingredient, whole_word){
         if (recipe_added == false){
           if (ing == search_ingredient){
             recipe.match = ing;
-            Logger.log('exact match - ' + recipe.name);
+            Logger.log(recipe.name + ' - exact match (' + ing + ' == ' + search_ingredient + ')');
             matching_recipes.push(recipe);
             recipe_added = true;
             return;
           }
           else if (ing.toLowerCase() == search_ingredient){
-            recipe.match = ing.toLowerCase();
-            Logger.log('lower case - ' + recipe.name);
+            recipe.match = ing;
+            Logger.log(recipe.name + ' - lower case (' + ing.toLowerCase() + ' == ' + search_ingredient + ')');
             matching_recipes.push(recipe);
             return;
           }
@@ -34,7 +34,7 @@ function searchForIngredient(search_ingredient, whole_word){
           else if (ing.match(search_ingredient)!= null){
             Logger.log(ing.match(search_ingredient));
             recipe.match = search_ingredient;
-            Logger.log('match - ' + recipe.name);
+            Logger.log(recipe.name + ' - match');
             matching_recipes.push(recipe);
             recipe_added = true;
             return;
@@ -43,7 +43,7 @@ function searchForIngredient(search_ingredient, whole_word){
           // First word
           else if (ing_split[0] == search_ingredient_split[0]){
             recipe.match = ing_split[0];
-            Logger.log('first word - ' + recipe.name);
+            Logger.log(recipe.name + ' - first word');
             matching_recipes.push(recipe);
             recipe_added = true;
             return;
