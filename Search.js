@@ -1,8 +1,28 @@
+function searchForTitle(search_string){
+  var all_recipes = getAllRecipes(),
+      matching_recipes = [];
+  Logger.log('Found all recipes, searching now');
+  all_recipes.forEach(function(recipe){
+    var title = recipe.name;
+    if (title.match(search_string)!= null){
+      matching_recipes.push(recipe);
+    } else if (title.toLowerCase().match(search_string)!= null){
+      matching_recipes.push(recipe);
+    }
+  });
+  matching_recipes.forEach(function(rec){
+    Logger.log(rec);
+  });
+  return matching_recipes;
+
+};
+
+
 function searchForIngredient(search_ingredient, whole_word){
 
   search_ingredient = search_ingredient == null ? 'cranberry' : search_ingredient.toString();
   search_ingredient = search_ingredient.toLowerCase();
-  Logger.log('Starting search for "' + search_ingredient + '"');
+  Logger.log('Starting search for Ingredient: "' + search_ingredient + '"');
 
   var all_recipes = getAllRecipes(),
       matching_recipes = [];
