@@ -3,7 +3,8 @@ function getImageFromRecipe(doc_id) {
   var doc = DocumentApp.openById(doc_id),
       doc_body = doc.getBody(),
       image = doc_body.findElement(DocumentApp.ElementType.INLINE_IMAGE);
-  return image.getElement();
+  Logger.log(image.getElement());
+  return image.getElement().getAs('image/png');
 };
 
 //https://developers.google.com/apps-script/reference/document/body
@@ -12,6 +13,7 @@ function getImageFromRecipe(doc_id) {
 function searchDocForIngredient(doc_id, ingredient){
   doc_id = doc_id == null ? '16pXPNJ8Z2kRsrUYndHpON9aN-4rhRqjD2g1eTIWcDRc' : doc_id;
   ingredient = ingredient == null ? 'cream' : ingredient;
+
   var doc = DocumentApp.openById(doc_id),
       doc_body = doc.getBody(),
       search_results = doc_body.findText(ingredient);
